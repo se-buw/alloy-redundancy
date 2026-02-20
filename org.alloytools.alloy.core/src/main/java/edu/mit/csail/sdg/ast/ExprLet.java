@@ -77,6 +77,10 @@ public final class ExprLet extends Expr {
         }
     }
 
+    public void setSpan(Pos span) {
+        this.span = span;
+    }
+
     // =============================================================================================================//
 
     /** Constructs a LET expression. */

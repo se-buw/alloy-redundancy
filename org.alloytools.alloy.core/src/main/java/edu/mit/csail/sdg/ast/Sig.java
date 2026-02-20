@@ -247,7 +247,7 @@ public abstract class Sig extends Expr implements Clause {
      * The list of "per atom" fact associated with this signature; each fact is
      * allowed to refer to this.decl.get()
      */
-    private final SafeList<Expr> facts = new SafeList<Expr>();
+    private SafeList<Expr> facts = new SafeList<Expr>();
 
     /**
      * Returns true if this sig is a toplevel sig (meaning: it is UNIV, or it is a
@@ -402,6 +402,10 @@ public abstract class Sig extends Expr implements Clause {
      */
     public SafeList<Expr> getFacts() {
         return facts.dup();
+    }
+
+    public void clearFacts() {
+        facts = new SafeList<Expr>();
     }
 
     /** {@inheritDoc} */

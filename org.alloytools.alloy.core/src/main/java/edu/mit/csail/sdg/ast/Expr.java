@@ -56,7 +56,7 @@ public abstract class Expr extends Browsable {
      * The filename, line, and column position in the original Alloy model file
      * (cannot be null).
      */
-    public final Pos pos;
+    public  Pos pos;
 
     /**
      * The filename, line, and column position in the original Alloy model file of
