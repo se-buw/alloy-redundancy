@@ -12,7 +12,12 @@ public class WarmUpAlloy {
   public static A4Options getOptions() {
     A4Options opt = new A4Options();
     String osName = System.getProperty("os.name").toLowerCase();
-    opt.solver = osName.contains("linux") ? SATFactory.get("minisat") : SATFactory.DEFAULT;
+    try {
+      opt.solver = SATFactory.get("minisat");
+    } catch (Exception e) {
+      opt.solver = SATFactory.DEFAULT;
+    }
+    System.out.println("Using solver: " + opt.solver);
     return opt;
   }
 

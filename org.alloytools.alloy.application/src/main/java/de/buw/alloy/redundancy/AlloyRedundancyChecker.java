@@ -27,7 +27,12 @@ public class AlloyRedundancyChecker {
 
   public AlloyRedundancyChecker() {
     this.opt = new A4Options();
-    opt.solver = osName.contains("linux") ? SATFactory.get("minisat") : SATFactory.DEFAULT;
+    try {
+      opt.solver = SATFactory.get("minisat");
+    } catch (Exception e) {
+      opt.solver = SATFactory.DEFAULT;
+    }
+    System.out.println("Using solver: " + opt.solver);
   }
 
   public AlloyRedundancyChecker(A4Options opt) {
