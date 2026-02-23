@@ -6,6 +6,7 @@ COPY . /alloy-redundancy/
 RUN ./gradlew clean build -x test
 
 RUN chmod +x /alloy-redundancy/analysis/scripts/*
+RUN sed -i 's/\r$//' /alloy-redundancy/analysis/scripts/*.sh
 
 # Extract dataset and rename
 RUN tar -xzf /alloy-redundancy/analysis/dataset_2026.tar.gz \
