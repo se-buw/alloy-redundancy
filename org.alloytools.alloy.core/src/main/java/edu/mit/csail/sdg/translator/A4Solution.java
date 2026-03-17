@@ -2008,6 +2008,7 @@ public final class A4Solution {
         for (Map.Entry<String,Table> e : table.entrySet()) {
             result.set(r, 0, e.getKey());
             result.set(r, 1, e.getValue());
+            r++;
         }
         return result;
     }
