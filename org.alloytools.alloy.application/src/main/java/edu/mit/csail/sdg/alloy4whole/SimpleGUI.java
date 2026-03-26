@@ -126,6 +126,7 @@ import javax.swing.text.html.StyleSheet;
 import org.alloytools.alloy.core.AlloyCore;
 
 import aQute.lib.io.IO;
+import de.buw.alloy.redundancy.AlloyRedundancyChecker;
 
 //import com.apple.eawt.Application;
 //import com.apple.eawt.ApplicationAdapter;
@@ -243,7 +244,7 @@ public final class SimpleGUI implements ComponentListener, Listener {
     private JToolBar              toolbar;
 
     /** The various toolbar buttons. */
-    private JButton               runbutton, stopbutton, showbutton;
+    private JButton               runbutton, redunbutton, redunExpButton, stopbutton, showbutton;
 
     /** The Splitpane. */
     private JSplitPane            splitpane;
@@ -1221,6 +1222,191 @@ public final class SimpleGUI implements ComponentListener, Listener {
         return doRun(latestCommand);
     }
 
+    private Runner doExplainRedundancy() {
+        if (wrap)
+            return wrapMe();
+        try {
+            wrap = true;
+            OurSyntaxWidget t = text.get();
+            String source = t.getText();
+            A4Options opt = new A4Options();
+            opt.tempDirectory = alloyHome(frame) + fs + "tmp";
+            opt.solverDirectory = alloyHome(frame) + fs + "binary";
+            opt.recordKodkod = RecordKodkod.get();
+            opt.noOverflow = NoOverflow.get();
+            opt.unrolls = Version.experimental ? Unrolls.get() : (-1);
+            opt.skolemDepth = SkolemDepth.get();
+            opt.coreMinimization = CoreMinimization.get();
+            opt.inferPartialInstance = InferPartialInstance.get();
+            opt.coreGranularity = CoreGranularity.get();
+            opt.decompose_mode = DecomposePref.get().ordinal();
+            opt.originalFilename = Util.canon(text.get().getFilename());
+            opt.solver = Solver.get();
+
+            text.clearShade();
+            Color redundancyColor = new Color(255, 255, 0, 100);
+            Color selectionColor = new Color(0, 255, 255, 100);
+            AlloyRedundancyChecker ivc = new AlloyRedundancyChecker(opt);
+            int cursorPos = t.getCaret() + 1;
+            Pos p = Pos.toPos(source, cursorPos, cursorPos, TabSize.get());
+
+            List<Expr> entailingSet = ivc.explainRedundancy(opt.originalFilename, p);
+
+            if (ivc.getSelectedConstraint() != null) {
+                text.shade(Util.asList(new Pos[] {
+                                                  ivc.getSelectedConstraint().span()
+                }), selectionColor, false);
+                log.logBold("Selected constraint: ");
+                log.log(ivc.getSelectedConstraint().span().toShortString() + " " + ivc.getSelectedConstraint() + "\n");
+                if (entailingSet == null) {
+                    log.logBold("The selected constraint is not redundant.\n\n");
+                    // TODO add an explanation as an instance violating the constraint
+
+                } else if (entailingSet.size() > 0) {
+                    log.logBold("Constraints that entail the selected contraint: " + entailingSet.size() + "\n\n");
+                    for (Expr e : entailingSet) {
+                        text.shade(Util.asList(new Pos[] {
+                                                          e.span()
+                        }), redundancyColor, false);
+                        log.log("  " + e.span().toShortString() + " " + e + "\n");
+                    }
+                } else {
+                    log.logBold("No explanation based on other facts found. " + "Redundancy originates from structural elements.\n\n");
+                }
+            } else {
+                log.logBold("Unable to determine selected constraint. Is it part of the model?\n\n");
+            }
+
+        } catch (Err e) {
+            log.logBold("Error: " + e.msg + "\n\n");
+        } catch (Throwable e) {
+            log.logBold("Error: " + e + "\n\n");
+        } finally {
+            wrap = false;
+        }
+
+        log.logDivider();
+        log.flush();
+        return null;
+    }
+
+    private Runner doExplainRedundancyNative() {
+        if (wrap)
+            return wrapMe();
+        try {
+            wrap = true;
+            OurSyntaxWidget t = text.get();
+            String source = t.getText();
+            A4Options opt = new A4Options();
+            opt.tempDirectory = alloyHome(frame) + fs + "tmp";
+            opt.solverDirectory = alloyHome(frame) + fs + "binary";
+            opt.recordKodkod = RecordKodkod.get();
+            opt.noOverflow = NoOverflow.get();
+            opt.unrolls = Version.experimental ? Unrolls.get() : (-1);
+            opt.skolemDepth = SkolemDepth.get();
+            opt.coreMinimization = CoreMinimization.get();
+            opt.inferPartialInstance = InferPartialInstance.get();
+            opt.coreGranularity = CoreGranularity.get();
+            opt.decompose_mode = DecomposePref.get().ordinal();
+            opt.originalFilename = Util.canon(text.get().getFilename());
+            opt.solver = Solver.get();
+
+            text.clearShade();
+            Color redundancyColor = new Color(255, 255, 0, 100);
+            Color selectionColor = new Color(0, 255, 255, 100);
+            AlloyRedundancyChecker ivc = new AlloyRedundancyChecker(opt);
+            int cursorPos = t.getCaret() + 1;
+            Pos p = Pos.toPos(source, cursorPos, cursorPos, TabSize.get());
+
+            List<Pos> entailingSet = ivc.explainRedundancyNative(opt.originalFilename, p);
+
+            if (ivc.getSelectedConstraint() != null) {
+                text.shade(Util.asList(new Pos[] {
+                                                  ivc.getSelectedConstraint().span()
+                }), selectionColor, false);
+                log.logBold("Selected constraint: ");
+                log.log(ivc.getSelectedConstraint().span().toShortString() + " " + ivc.getSelectedConstraint() + "\n");
+                if (entailingSet == null) {
+                    log.logBold("The selected constraint is not redundant.\n\n");
+                    // TODO add an explanation as an instance violating the constraint
+
+                } else if (entailingSet.size() > 0) {
+                    log.logBold("Constraints that entail the selected contraints: " + entailingSet.size() + "\n\n");
+                    for (Pos e : entailingSet) {
+                        text.shade(Util.asList(new Pos[] {
+                                                          e
+                        }), redundancyColor, false);
+                        log.log("  " + e.toShortString() + "\n");
+                    }
+                } else {
+                    log.logBold("No explanation based on other facts found. " + "Redundancy originates from structural elements.\n\n");
+                }
+            } else {
+                log.logBold("Unable to determine selected constraint. Is it part of the model?\n\n");
+            }
+        } catch (Err e) {
+            log.logBold("Error: " + e.msg + "\n\n");
+        } catch (Throwable e) {
+            log.logBold("Error: " + e.getMessage() + "\n\n");
+        } finally {
+            wrap = false;
+        }
+
+        log.logDivider();
+        log.flush();
+        return null;
+    }
+
+    private Runner doCheckRedundancy() {
+        if (wrap)
+            return wrapMe();
+        try {
+            wrap = true;
+            OurSyntaxWidget t = text.get();
+            String source = t.getText();
+            A4Options opt = new A4Options();
+            opt.tempDirectory = alloyHome(frame) + fs + "tmp";
+            opt.solverDirectory = alloyHome(frame) + fs + "binary";
+            opt.recordKodkod = RecordKodkod.get();
+            opt.noOverflow = NoOverflow.get();
+            opt.unrolls = Version.experimental ? Unrolls.get() : (-1);
+            opt.skolemDepth = SkolemDepth.get();
+            opt.coreMinimization = CoreMinimization.get();
+            opt.inferPartialInstance = InferPartialInstance.get();
+            opt.coreGranularity = CoreGranularity.get();
+            opt.decompose_mode = DecomposePref.get().ordinal();
+            opt.originalFilename = Util.canon(text.get().getFilename());
+            opt.solver = Solver.get();
+
+            text.clearShade();
+            Color redundancyColor = new Color(255, 255, 0, 100);
+            AlloyRedundancyChecker ivc = new AlloyRedundancyChecker(opt);
+            List<Expr> maxSet = ivc.maxRedundantSet(opt.originalFilename);
+            if (maxSet.size() > 0) {
+                log.logBold("Redundant elements: " + maxSet.size() + "\n\n");
+                for (Expr e : maxSet) {
+                    text.shade(Util.asList(new Pos[] {
+                                                      e.span()
+                    }), redundancyColor, false);
+                    log.log("  " + e.span().toShortString() + " " + e + "\n");
+                }
+            } else {
+                log.logBold("No redundant elements found.\n\n");
+            }
+
+        } catch (Err e) {
+            log.logBold("Error: " + e.msg + "\n\n");
+        } catch (Throwable e) {
+            log.logBold("Error: " + e + "\n\n");
+        } finally {
+            wrap = false;
+        }
+
+        log.logDivider();
+        log.flush();
+        return null;
+    }
+
     /** This method displays the parse tree. */
     private Runner doShowParseTree() {
         if (wrap)
@@ -2131,6 +2317,9 @@ public final class SimpleGUI implements ComponentListener, Listener {
             toolbar.add(OurUtil.button("Reload", "Reload all the models from disk", "images/24_reload.gif", doReloadAll()));
             toolbar.add(OurUtil.button("Save", "Saves the current model", "images/24_save.gif", doSave()));
             toolbar.add(runbutton = OurUtil.button("Execute", "Executes the latest command", "images/24_execute.gif", doExecuteLatest()));
+            toolbar.add(redunbutton = OurUtil.button("Redundancy", "Check current model for redundant elements", "images/24_execute.gif", doCheckRedundancy()));
+            toolbar.add(redunExpButton = OurUtil.button("Exp. Red.", "Explain redundancy of element", "images/24_execute.gif", doExplainRedundancy()));
+            toolbar.add(redunExpButton = OurUtil.button("Exp. Red. Nat.", "Explain redundancy using MiniSatProverJNI", "images/24_execute.gif", doExplainRedundancyNative()));
             toolbar.add(stopbutton = OurUtil.button("Stop", "Stops the current analysis", "images/24_execute_abort2.gif", doStop(2)));
             stopbutton.setVisible(false);
             toolbar.add(showbutton = OurUtil.button("Show", "Shows the latest instance", "images/24_graph.gif", doShowLatest()));
