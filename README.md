@@ -1,16 +1,20 @@
-# Alloy Redundancy Analyzer
+<div align="center">
+   <h1>Alloy Redundancy Analyzer</h1>
+   <a href="https://zenodo.org/record/20795324">
+      <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20795324.svg" alt="DOI Badge" />
+   </a>
+   <img src="https://img.shields.io/badge/Alloy-6.0%2B-brightgreen.svg" alt="Alloy Version Badge" />
+   <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License Badge" />
+   <hr>
+   <p align="left"><strong>Alloy Redundancy Analyzer</strong> is an enhanced, customized distribution of the official <a href="https://github.com/alloytools/alloy">Alloy Analyzer</a>, designed to automatically detect, compute maximal sets of, and explain <strong>redundant constraints</strong> in Alloy specifications.</p>
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20795324.svg)](https://doi.org/10.5281/zenodo.20795324)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Alloy Version](https://img.shields.io/badge/Alloy-6.0%2B-brightgreen.svg)](https://alloytools.org/)
+   <p align="left">For more information, please refer to our <a href="https://conf.researchr.org/details/models-2026/models-2026-research-papers/20/On-Redundancy-in-Alloy-Models">MODELS 2026 paper</a>.</p>
+   </p>
+
+   <img src="./resources/GUI.png" alt="Alloy Redundancy Analyzer GUI Screenshot" />
+</div>
 
 ---
-
-**Alloy Redundancy Analyzer** is an enhanced, customized distribution of the official [Alloy Analyzer](https://github.com/alloytools/alloy), designed to automatically detect, compute maximal sets of, and explain **redundant constraints** in Alloy specifications.
-
-This repository contains the source code for our research paper:
-
-> **On Redundancy in Alloy Models** _(MODELS 2026)_.
 
 ---
 
