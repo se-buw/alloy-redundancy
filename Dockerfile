@@ -1,17 +1,22 @@
 FROM eclipse-temurin:17-jdk-jammy
 
+# Install python 13 and dependencies
+RUN apt-get update && apt-get install -y software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y unzip
+
 WORKDIR /alloy-redundancy
-COPY . /alloy-redundancy/
 
+
+# Copy the rest of the application
+COPY . .
+
+# Build Alloy and copy the JAR to the analysis results directory
+RUN chmod +x ./gradlew
 RUN ./gradlew clean build -x test
+RUN cp /alloy-redundancy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar /alloy-redundancy/analysis/results/
 
-RUN chmod +x /alloy-redundancy/analysis/scripts/*
-RUN sed -i 's/\r$//' /alloy-redundancy/analysis/scripts/*.sh
-
-# Extract dataset and rename
-RUN tar -xzf /alloy-redundancy/analysis/dataset_2026.tar.gz \
-    && mv /alloy-redundancy/dataset_2026 /alloy-redundancy/analysis/dataset \
-    && rm /alloy-redundancy/analysis/dataset_2026.tar.gz
 
 # Default command for interactive usage
 CMD ["/bin/bash"]
