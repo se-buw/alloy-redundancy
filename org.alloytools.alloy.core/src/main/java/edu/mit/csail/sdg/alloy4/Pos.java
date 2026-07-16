@@ -260,7 +260,7 @@ public final class Pos implements Serializable {
         if (end > text.length() || end == -1)
             end = text.length();
 
-        if (start < 0 || start >= end || end < 0 || end > text.length())
+        if (start < 0 || start > end || end < 0 || end > text.length())
             return null;
 
         int row2 = 0, col2 = 0;

@@ -39,7 +39,7 @@ import edu.mit.csail.sdg.parser.Macro;
  * top level as possible (in order to get better precision unsat core results)
  */
 
-final class ConvToConjunction extends VisitReturn<Expr> {
+public final class ConvToConjunction extends VisitReturn<Expr> {
 
     /** {@inheritDoc} */
     @Override

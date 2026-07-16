@@ -253,7 +253,7 @@ public final class CompModule extends Browsable implements Module {
      * The list of facts; each fact is either an untypechecked Exp or a typechecked
      * Expr.
      */
-    private final List<Pair<String,Expr>>     facts       = new ArrayList<Pair<String,Expr>>();
+    public final List<Pair<String,Expr>>     facts       = new ArrayList<Pair<String,Expr>>();
 
     /**
      * The list of (CommandName,Command,Expr) triples; NOTE: duplicate command names

@@ -1,4 +1,5 @@
 .DS_Store
+analysis/
 .gradle/
 generated/
 bin/
