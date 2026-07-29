@@ -23,6 +23,7 @@ import kodkod.engine.satlab.SATFactory;
 public class AlloyRedundancyChecker {
   private A4Options opt;
   private A4Reporter rep = A4Reporter.NOP;
+  private Map<String, String> macroMap = null;
   private static final String osName = System.getProperty("os.name").toLowerCase();
 
   public AlloyRedundancyChecker() {
@@ -39,6 +40,10 @@ public class AlloyRedundancyChecker {
     this.opt = opt;
   }
 
+  public void setMacroMap(Map<String, String> macroMap) {
+    this.macroMap = macroMap;
+  }
+
   /**
    * Check the Alloy module for redundant constraints.
    * 
@@ -47,7 +52,7 @@ public class AlloyRedundancyChecker {
    * @return list of redundant constraints
    */
   public List<Expr> redundantConstraints(String fileName, int cmdId) {
-    CompModule m = CompUtil.parseEverything_fromFile(rep, null, fileName);
+    CompModule m = CompUtil.parseEverything_fromFile(rep, macroMap, fileName);
     m = ModuleTransformer.globalizeInlineFacts(m);
     
     List<Expr> redundantElems = new ArrayList<>();
@@ -97,7 +102,7 @@ public class AlloyRedundancyChecker {
    * @return
    */
   public boolean checkHasInherentVacuity(String fileName) {
-    Module m = CompUtil.parseEverything_fromFile(rep, null, fileName);
+    Module m = CompUtil.parseEverything_fromFile(rep, macroMap, fileName);
     for (Command c : m.getAllCommands()) {
       if (checkHasInherentVacuity(m, c)) {
         return true;
@@ -139,12 +144,12 @@ public class AlloyRedundancyChecker {
   }
 
   public List<Expr> maxRedundantSet(String fileName, int cmdId) {
-    CompModule m = CompUtil.parseEverything_fromFile(rep, null, fileName);
+    CompModule m = CompUtil.parseEverything_fromFile(rep, macroMap, fileName);
     Command c = m.getAllCommands().get(cmdId);
     return maxRedundantSet(m, c);
   }
   public List<Expr> maxRedundantSet(String fileName) {
-    CompModule m = CompUtil.parseEverything_fromFile(rep, null, fileName);
+    CompModule m = CompUtil.parseEverything_fromFile(rep, macroMap, fileName);
     return maxRedundantSet(m);
   }
 
@@ -244,7 +249,7 @@ public class AlloyRedundancyChecker {
   public List<Expr> explainRedundancy(String fileName, Pos p) {
     selectedConstraint = null;
     // convert module to expressions
-    CompModule m = CompUtil.parseEverything_fromFile(A4Reporter.NOP, null, fileName);
+    CompModule m = CompUtil.parseEverything_fromFile(A4Reporter.NOP, macroMap, fileName);
     m = ModuleTransformer.globalizeInlineFacts(m);
     List<Expr> constraints = ModuleTransformer.flatten(m.getAllReachableFacts());
     // find the constraints that contain the position
@@ -280,7 +285,7 @@ public class AlloyRedundancyChecker {
   public List<Pos> explainRedundancyNative(String fileName, Pos p) {
     selectedConstraint = null;
     // convert module to expressions
-    CompModule m = CompUtil.parseEverything_fromFile(A4Reporter.NOP, null, fileName);
+    CompModule m = CompUtil.parseEverything_fromFile(A4Reporter.NOP, macroMap, fileName);
     m = ModuleTransformer.globalizeInlineFacts(m);
     List<Expr> constraints = ModuleTransformer.flatten(m.getAllReachableFacts());
     // find the constraints that contain the position

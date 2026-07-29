@@ -1247,6 +1247,7 @@ public final class SimpleGUI implements ComponentListener, Listener {
             Color redundancyColor = new Color(255, 255, 0, 100);
             Color selectionColor = new Color(0, 255, 255, 100);
             AlloyRedundancyChecker ivc = new AlloyRedundancyChecker(opt);
+            ivc.setMacroMap(text.takeSnapshot());
             int cursorPos = t.getCaret() + 1;
             Pos p = Pos.toPos(source, cursorPos, cursorPos, TabSize.get());
 
@@ -1315,6 +1316,7 @@ public final class SimpleGUI implements ComponentListener, Listener {
             Color redundancyColor = new Color(255, 255, 0, 100);
             Color selectionColor = new Color(0, 255, 255, 100);
             AlloyRedundancyChecker ivc = new AlloyRedundancyChecker(opt);
+            ivc.setMacroMap(text.takeSnapshot());
             int cursorPos = t.getCaret() + 1;
             Pos p = Pos.toPos(source, cursorPos, cursorPos, TabSize.get());
 
@@ -1381,6 +1383,7 @@ public final class SimpleGUI implements ComponentListener, Listener {
             text.clearShade();
             Color redundancyColor = new Color(255, 255, 0, 100);
             AlloyRedundancyChecker ivc = new AlloyRedundancyChecker(opt);
+            ivc.setMacroMap(text.takeSnapshot());
             List<Expr> maxSet = ivc.maxRedundantSet(opt.originalFilename);
             if (maxSet.size() > 0) {
                 log.logBold("Redundant elements: " + maxSet.size() + "\n\n");
