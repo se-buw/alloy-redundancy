@@ -173,13 +173,13 @@ public class RedundancyMain {
       long start = System.currentTimeMillis();
       List<Pos> expl = checker.explainRedundancyNative(m, null, constraints, constraints.get(constraintId));
       long time = System.currentTimeMillis() - start;
-      writeCsv("explainNative.csv", model, commandId, constraintId, expl.size(), calcSizePos(expl, model), time);
+      writeCsv("explainNative.csv", model, commandId, constraintId, expl != null ? expl.size() : 0, expl != null ? calcSizePos(expl, model) : 0, time);
     } else {
       Command cmd = m.getAllCommands().get(commandId);      
       long start = System.currentTimeMillis();
       List<Pos> expl = checker.explainRedundancyNative(m, cmd, constraints, constraints.get(constraintId));
       long time = System.currentTimeMillis() - start;
-      writeCsv("explainNative.csv", model, commandId, constraintId, expl.size(), calcSizePos(expl, model), time);    
+      writeCsv("explainNative.csv", model, commandId, constraintId, expl != null ? expl.size() : 0, expl != null ? calcSizePos(expl, model) : 0, time);    
     }
   }
 
@@ -200,13 +200,13 @@ public class RedundancyMain {
       long start = System.currentTimeMillis();
       List<Expr> expl = checker.explainRedundancy(m, null, constraints, constraints.get(constraintId));
       long time = System.currentTimeMillis() - start;
-      writeCsv("explain.csv", model, commandId, constraintId, expl.size(), printSubset(expl, constraints), calcSize(expl, model), time);
+      writeCsv("explain.csv", model, commandId, constraintId, expl != null ? expl.size() : 0, expl != null ? printSubset(expl, constraints) : "", expl != null ? calcSize(expl, model) : 0, time);
     } else {
       Command cmd = m.getAllCommands().get(commandId);      
       long start = System.currentTimeMillis();
       List<Expr> expl = checker.explainRedundancy(m, cmd, constraints, constraints.get(constraintId));
       long time = System.currentTimeMillis() - start;
-      writeCsv("explain.csv", model, commandId, constraintId, expl.size(), printSubset(expl, constraints), calcSize(expl, model), time);    
+      writeCsv("explain.csv", model, commandId, constraintId, expl != null ? expl.size() : 0, expl != null ? printSubset(expl, constraints) : "", expl != null ? calcSize(expl, model) : 0, time);    
     }
   }
 
@@ -247,9 +247,10 @@ public class RedundancyMain {
    * @throws IOException
    */
   private static int calcSize(List<Expr> mrs, String model) throws IOException {
+    if (mrs == null) return 0;
     List<Pos> poss = new ArrayList<>();
     for (Expr e : mrs) {
-      poss.add(e.span());
+      if (e != null) poss.add(e.span());
     }
     return calcSizePos(poss, model);
   }
@@ -262,10 +263,11 @@ public class RedundancyMain {
    * @throws IOException
    */
   private static int calcSizePos(List<Pos> mrs, String model) throws IOException {
+    if (mrs == null) return 0;
     String text = Files.readString(Paths.get(model));
     int size = 0;
     for (Pos p : mrs) {
-     size += p.substring(text).length();
+     if (p != null) size += p.substring(text).length();
     }
     return size;
   }
