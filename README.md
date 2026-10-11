@@ -85,10 +85,25 @@ We welcome contributions, bug reports, and pull requests! Since this project is 
 
 ## Citation
 
-If you use this tool or dataset in your academic research, please cite our MODELS 2026 paper:
+If you use this tool or dataset in your academic research, please cite our [MODELS 2026 paper](https://doi.org/10.1145/3822455.3830324):
 
 ```bibtex
-
+@inproceedings{SoaibuzzamanR26,
+  author       = {Soaibuzzaman and
+                  Jan Oliver Ringert},
+  editor       = {Lola Burgue{\~{n}}o and
+                  Esther Guerra and
+                  Mehrdad Sabetzadeh},
+  title        = {On Redundancy in Alloy Models},
+  booktitle    = {Proceedings of the {ACM/IEEE} 29th International Conference on Model
+                  Driven Engineering Languages and Systems, {MODELS} 2026, M{\'{a}}laga,
+                  Spain, October 4-9, 2026},
+  pages        = {58--68},
+  publisher    = {{ACM}},
+  year         = {2026},
+  url          = {https://doi.org/10.1145/3822455.3830324},
+  doi          = {10.1145/3822455.3830324},
+}
 ```
 
 ---
